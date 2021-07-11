@@ -39,5 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./
+        env:
+          ACTIONS_STEP_DEBUG: true
         # with:
           # actor: ${{ matrix.actor }}
