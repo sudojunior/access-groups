@@ -12,11 +12,33 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          npm install
+          yarn
       - run: |
-          npm run all
+          yarn build
+          yarn lint
+          yarn package
+          yarn test
   test: # make sure the action works on a clean machine without building
+    strategy:
+      matrix:
+        actor:
+          - sudojunior
+          # - (site admin) #6
+          # - (repo collaborator) #9
+          # - (repo contributor) #27
+          # - (campus expert) #16
+          # - (bounty hunter) #17
+          # - (dev program member) #18
+          # - (sponsor) #19
+          # - (stargazer) #25
+          # - (follower) #26
+        #include:
+        #  - actor: (org member #8, repo admin #11, triage #14, observer #24)
+        #    repo: (org repo)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: ./
+        with:
+          token: ${{ github.token }}
+          # actor: ${{ matrix.actor }}
