@@ -27,7 +27,8 @@ const tests: TestGroup[] = [
 
 const {groups} = accessGroups(
   {
-    user: 'sudojunior'
+    user: 'sudojunior',
+    repo: 'access-groups'
   },
   {
     viewer: {

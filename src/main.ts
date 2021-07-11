@@ -1,18 +1,20 @@
 import * as core from '@actions/core'
 import {context, getOctokit} from '@actions/github'
+import {OctokitResponse} from '@octokit/types'
 
-import {accessGroups} from './access'
+import {AccessData, accessGroups} from './access'
 
 async function run(): Promise<void> {
   try {
     const user = context.actor // core.getInput('user') - future
+    const repo = context.payload.repository?.full_name
     const token: string = core.getInput('github-token') // mirroring 'actions/github-script'
 
     // const endpoint = core.getInput('endpoint')
 
     const octokit = getOctokit(token)
 
-    const data = octokit.request(
+    const {data}: OctokitResponse<AccessData> = await octokit.request(
       `
       {
         viewer {
@@ -30,12 +32,15 @@ async function run(): Promise<void> {
       `
     )
 
-    const {groups} = await accessGroups(
+    core.debug(`Access Data: ${JSON.stringify(data)}`)
+
+    const {groups} = accessGroups(
       {
         // endpoint
-        user
+        user,
+        repo
       },
-      data as any
+      data
     )
 
     core.debug(`${user} has access to ${groups.join(', ')}`)

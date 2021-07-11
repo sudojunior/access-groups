@@ -1,6 +1,7 @@
 interface AccessOptions {
   // endpoint: string
   user: string
+  repo: string
 }
 
 // {scope}_{group} = {scope} {group}
@@ -31,13 +32,13 @@ const defaultOptions = {
   // endpoint: "https://api.github.com"
 }
 
-export async function accessGroups(
+export function accessGroups(
   options: Partial<AccessOptions> = {},
   data: AccessData
-): Promise<AccessResponse> {
+): AccessResponse {
   options = Object.assign(defaultOptions, options)
 
-  let groups: Set<AccessGroup> = new Set()
+  const groups: Set<AccessGroup> = new Set()
 
   //#region setup
   const viewer = data.viewer

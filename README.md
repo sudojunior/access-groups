@@ -30,6 +30,13 @@ An action to help determine what groups a user belongs to.
 
 GitHub has a set of adaptive groups that exist under the hood to control permissions per repository and organization.
 
+Groups for v1 are currently being limited to the following:
+
+- `site admin`
+- `repo owner`
+
+It is worth noting that the data for the query to determine other groups is there, just not implemented yet.
+
 ## Usage
 
 ```yaml
@@ -42,7 +49,8 @@ GitHub has a set of adaptive groups that exist under the hood to control permiss
 
 ```yaml
 - uses: sudojunior/access-groups@main
-  endpoint: https://api.github.com # as default, without last '/' as standard with octokit
+  with:
+    endpoint: https://api.github.com # as default, without last '/' as standard with octokit
 ```
 
 ## Future consideration
