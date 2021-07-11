@@ -10,7 +10,7 @@ async function run(): Promise<void> {
 		const { actor } = context; // core.getInput('user') - future
 		const { owner, repo } = context.repo;
 
-		const token: string = core.getInput('token', { required: false });
+		const token: string = core.getInput('github-token', { required: false });
 
 		const octokit = getOctokit(token, {
 			baseUrl: context.apiUrl,

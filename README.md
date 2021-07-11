@@ -24,7 +24,7 @@ An action to help determine what groups a user belongs to.
 ```yaml
 - uses: sudojunior/access-groups@main
   with:
-    token: ${{ github.token }} # as default
+    github-token: ${{ github.token }} # as default
 ```
 
 ## Output
