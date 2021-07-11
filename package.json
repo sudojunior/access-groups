@@ -11,7 +11,8 @@
     "package": "ncc build --source-map --license licenses.txt",
     "test": "ava",
     "test:debug": "ava --verbose",
-    "all": "npm run build && npm run lint && npm run package && npm test"
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate"
   },
   "repository": {
     "type": "git",
@@ -68,8 +69,12 @@
     "parser": "@typescript-eslint/parser"
   },
   "xo": {
+    "files": [
+      "*.ts"
+    ],
     "rules": {
-      "unicorn/prefer-node-protocol": "off"
+      "unicorn/prefer-node-protocol": "off",
+      "capitalized-comments": "off"
     }
   }
 }

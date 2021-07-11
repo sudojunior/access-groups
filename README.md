@@ -15,8 +15,6 @@ An action to help determine what groups a user belongs to.
 
 > Future releases may include a fail-if clause, which would act as a fast fail for that step or job.
 
-## Context
-
 ## Arguments
 
 ### User context override {Considering}
@@ -49,19 +47,6 @@ It is worth noting that the data for the query to determine other groups is ther
 
 ```yaml
 - uses: sudojunior/access-groups@main # or specific tag
-```
-
-## Future consideration
-
-### User / Repo context override (via argument)
-
-*Currenly open in [#22](https://github.com/sudojunior/access-groups/issues/22)*
-
-```yaml
-- uses: sudojunior/access-groups@main
-  with:
-    user: ${{ github.actor }} # as default
-    repo: ${{ github.repository }} # as default
 ```
 
 ### Access groups
@@ -106,3 +91,25 @@ It is worth noting that the data for the query to determine other groups is ther
 - [VSCode](https://github.com/Microsoft/vscode) - Preferred editor
 - [`xo`](https://github.com/xojs/xo) && [`ava`](https://github.com/avajs/ava) - CI linting and testing
 - [@vercel/ncc](https://github.com/vercel/ncc) - Build process
+
+## Known Issues
+
+- Any file matching to `./tests/**/*.ts` has a warning exactly like the one below, it is unknown as to why this is happening - but it does not affect the build process.
+  > Parsing error: "parserOptions.project" has been set for @typescript-eslint/parser.  
+    The file does not match your project config: tests\main.test.ts.  
+    The file must be included in at least one of the projects provided.
+
+## Future consideration
+
+- [Complete Security Checklist](https://github.com/sudojunior/access-groups/security)
+
+### User / Repo context override (via argument)
+
+*Currenly open in [#22](https://github.com/sudojunior/access-groups/issues/22)*
+
+```yaml
+- uses: sudojunior/access-groups@main
+  with:
+    user: ${{ github.actor }} # as default
+    repo: ${{ github.repository }} # as default
+```
