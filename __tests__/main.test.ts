@@ -1,28 +1,55 @@
-import {wait} from '../src/wait'
-import * as process from 'process'
-import * as cp from 'child_process'
-import * as path from 'path'
+import {accessGroups, AccessGroup} from '../src/access'
 
-test('throws invalid number', async () => {
-  const input = parseInt('foo', 10)
-  await expect(wait(input)).rejects.toThrow('milliseconds not a number')
-})
+interface TestGroup {
+  key: string
+  identifier: string
+  expectFail: boolean
+}
 
-test('wait 500 ms', async () => {
-  const start = new Date()
-  await wait(500)
-  const end = new Date()
-  var delta = Math.abs(end.getTime() - start.getTime())
-  expect(delta).toBeGreaterThan(450)
-})
+const tests: TestGroup[] = [
+  {key: 'a github employee', identifier: 'github employee', expectFail: true},
+  {key: 'hireable', identifier: 'hireable', expectFail: true},
+  {key: 'a site admin', identifier: 'site admin', expectFail: true},
+  {key: 'a github star', identifier: 'github star', expectFail: true},
+  {
+    key: 'a bounty hunter',
+    identifier: 'github bounty hunter',
+    expectFail: true
+  },
+  {key: 'a campus expert', identifier: 'campus expert', expectFail: true},
+  {key: 'a sponsor', identifier: 'sponsor', expectFail: true},
+  {
+    key: 'a developer program member',
+    identifier: 'github dev program member',
+    expectFail: true
+  } // idk
+]
 
-// shows how the runner will run a javascript action with env / stdout protocol
-test('test runs', () => {
-  process.env['INPUT_MILLISECONDS'] = '500'
-  const np = process.execPath
-  const ip = path.join(__dirname, '..', 'lib', 'main.js')
-  const options: cp.ExecFileSyncOptions = {
-    env: process.env
+const {groups} = accessGroups(
+  {
+    user: 'sudojunior'
+  },
+  {
+    viewer: {
+      // mock user data, but true to what is expected
+      isEmployee: false,
+      isHireable: false,
+      isSiteAdmin: false,
+      isGitHubStar: false,
+      isBountyHunter: false,
+      isCampusExpert: false,
+      isSponsoringViewer: false,
+      isDeveloperProgramMember: false
+    }
   }
-  console.log(cp.execFileSync(np, [ip], options).toString())
-})
+)
+
+for (const {key, identifier, expectFail} of tests) {
+  test('user is ' + key, () => {
+    let outcome = groups.includes(identifier as AccessGroup)
+
+    if (expectFail) outcome = !outcome
+
+    expect(outcome).toBe(true)
+  })
+}

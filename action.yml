@@ -1,11 +1,17 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
-inputs:
-  milliseconds: # change this
-    required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+name: 'Access Groups'
+description: 'https://github.com/sudojunior/test-action'
+author: 'sudojunior'
+# inputs:
+#   endpoint:
+#     required: false
+#     default: https://api.github.com
+#     description: "Used on self-hosted enterprise instances."
+outputs:
+  groups:
+    description: A list of groups that fit the user, in order of percieved hierarchy.
+branding:
+  icon: user-check
+  color: blue
 runs:
   using: 'node12'
   main: 'dist/index.js'
