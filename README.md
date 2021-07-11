@@ -1,8 +1,13 @@
 # access-groups
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-[![Action Status](https://github.com/sudojunior/access-groups)](https://github.com/sudojunior/access-groups/workflows/build-test/badge.svg)
+[![build-test](https://github.com/sudojunior/access-groups/actions/workflows/test.yml/badge.svg)](https://github.com/sudojunior/access-groups/actions/workflows/test.yml)
 ![XO Code Style](https://badgen.net/badge/code%20style/XO/5ed9c7)
-![Stargazers](https://badgen.net/github/stars/sudojunior/access-groups)
+![Stargazers](https://badgen.net/github/stars/sudojunior/access-groups)<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 An action to help determine what groups a user belongs to.
 
@@ -79,9 +84,21 @@ It is worth noting that the data for the query to determine other groups is ther
 | Follower (User)                | [#26](https://github.com/sudojunior/access-groups/issues/26) |
 | Repo Contributor               | [#27](https://github.com/sudojunior/access-groups/issues/27) |
 
-## Credits
+## Contributors
 
-*A place to give my thanks to direct and indirect contributors.* ❤
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/features/security"><img src="https://avatars.githubusercontent.com/u/27347476?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dependabot</b></sub></a><br /><a href="#maintenance-dependabot" title="Maintenance">🚧</a> <a href="#security-dependabot" title="Security">🛡️</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ### Packages
 
