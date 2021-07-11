@@ -17,14 +17,14 @@ An action to help determine what groups a user belongs to.
 
 ## Arguments
 
-### User context override {Considering}
+### GitHub Token {Future}
 
-*May override specific features, preventing intended flow.*
+*Will allow for scope use of context info like organization and sponsors (maybe...).*
 
 ```yaml
 - uses: sudojunior/access-groups@main
   with:
-    user: ${{ github.actor }} # as default
+    token: ${{ github.token }} # as default
 ```
 
 ## Output

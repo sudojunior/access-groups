@@ -1,11 +1,13 @@
 name: 'Access Groups'
 description: 'https://github.com/sudojunior/test-action'
 author: 'sudojunior'
-# inputs:
-#   endpoint:
-#     required: false
-#     default: https://api.github.com
-#     description: "Used on self-hosted enterprise instances."
+inputs:
+  token:
+    required: false
+    default: ${{ github.token }}
+    description: >
+      A GitHub Actions credentials key (either `github.token` or `secrets.GITHUB_TOKEN`) [Read More on GitHub Docs](https://docs.github.com/en/actions/reference/authentication-in-a-workflow).
+      Used to access organization or sponsor details (future, but recommended for when it does get released).
 outputs:
   groups:
     description: A list of groups that fit the user, in order of percieved hierarchy.
