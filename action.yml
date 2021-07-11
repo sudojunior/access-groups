@@ -3,7 +3,7 @@ description: 'https://github.com/sudojunior/test-action'
 author: 'sudojunior'
 inputs:
   token:
-    required: true
+    required: false
     default: ${{ github.token }}
     description: >
       A GitHub Actions credentials key (either `github.token` or `secrets.GITHUB_TOKEN`) [Read More on GitHub Docs](https://docs.github.com/en/actions/reference/authentication-in-a-workflow).
