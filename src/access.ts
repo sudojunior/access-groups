@@ -1,56 +1,35 @@
-interface AccessOptions {
-  // endpoint: string
-  user: string
-  repo: string
-}
+import {Context} from '@actions/github/lib/context';
 
-// {scope}_{group} = {scope} {group}
-
-export enum AccessGroup {
-  site_admin = 'site admin',
-  repo_owner = 'repo owner'
-}
+import checks from './checks';
 
 export interface AccessData {
-  viewer: {
-    isEmployee: boolean
-    isHireable: boolean
-    isSiteAdmin: boolean
-    isGitHubStar: boolean
-    isBountyHunter: boolean
-    isCampusExpert: boolean
-    isSponsoringViewer: boolean
-    isDeveloperProgramMember: boolean
-  }
+	viewer: {
+		isSiteAdmin: boolean;
+	};
 }
 
 interface AccessResponse {
-  groups: AccessGroup[]
-}
-
-const defaultOptions = {
-  // endpoint: "https://api.github.com"
+	// {scope} {group}
+	groups: string[];
+	readonly highestGroup: string;
 }
 
 export function accessGroups(
-  options: Partial<AccessOptions> = {},
-  data: AccessData
+	context: Context,
+	data: AccessData,
 ): AccessResponse {
-  options = Object.assign(defaultOptions, options)
+	const groups: Set<string> = new Set();
 
-  const groups: Set<AccessGroup> = new Set()
+	for (const {key, check} of checks) {
+		if (check(data, context)) {
+			groups.add(key);
+		}
+	}
 
-  //#region setup
-  const viewer = data.viewer
-  //#endregion
-
-  //#region site_admin
-  if (viewer.isSiteAdmin) {
-    groups.add(AccessGroup.site_admin)
-  }
-  //#endregion
-
-  //#region repo_owner
-
-  return {groups: [...groups]}
+	return {
+		groups: [...groups],
+		get highestGroup() {
+			return this.groups[0];
+		},
+	};
 }
