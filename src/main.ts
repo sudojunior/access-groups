@@ -21,7 +21,7 @@ async function run(): Promise<void> {
 
 		const {data}: OctokitResponse<DataQuery> = await octokit.graphql(
 			`
-      query accessData($owner: String!, $repo: String!, $user: String!) {
+			query accessData($owner: String!, $repo: String!, $user: String!) {
 				user(login: $user) {
 					...Access
 				}
@@ -46,7 +46,7 @@ async function run(): Promise<void> {
 				isSiteAdmin
 				__typename
 			}
-      `,
+			`,
 			{
 				owner,
 				repo,
