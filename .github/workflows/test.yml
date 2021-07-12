@@ -13,11 +13,12 @@ jobs:
       - uses: actions/checkout@v2
       - run: |
           yarn
+      - run: yarn run-all
       - run: |
-          yarn build
-          yarn lint
-          yarn package
-          yarn test
+          if [ ! -z "$(git status --porcelain)" ]; then
+            echo "Unstaged changes detected (~/dist/ folder is likely)."
+            exit 1
+          fi
   test: # make sure the action works on a clean machine without building
     strategy:
       matrix:
