@@ -57,7 +57,11 @@
     "require": [
       "ts-node/register"
     ],
-    "failWithoutAssertions": false
+    "failWithoutAssertions": false,
+    "environmentVariables": {
+      "GITHUB_REPOSITORY": "sudojunior/access-groups",
+      "GITHUB_ACTOR": "sudojunior"
+    }
   },
   "eslintConfig": {
     "extends": [

@@ -9,14 +9,7 @@ export function logAndExport<T>(key: string, input: T, message: string): void {
 export interface DataQuery {
 	repository: {
 		owner: UserDataQuery;
-		collaborators: Array<{
-			node: UserDataQuery;
-			edges: {
-				permission: string;
-			};
-		}>;
 	};
-	user: UserDataQuery;
 }
 
 export interface UserDataQuery {

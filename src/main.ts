@@ -13,7 +13,7 @@ async function run(): Promise<void> {
 		const token: string = core.getInput('github-token', {required: false});
 
 		const octokit = getOctokit(token, {
-			baseUrl: context.apiUrl,
+			baseUrl: context.graphqlUrl,
 		});
 
 		const {data}: OctokitResponse<DataQuery> = await octokit.graphql(
