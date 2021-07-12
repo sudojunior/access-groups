@@ -1,12 +1,7 @@
 import {Context} from '@actions/github/lib/context';
 
 import checks from './checks';
-
-export interface AccessData {
-	viewer: {
-		isSiteAdmin: boolean;
-	};
-}
+import {DataQuery} from './util';
 
 interface AccessResponse {
 	// {scope} {group}
@@ -16,7 +11,7 @@ interface AccessResponse {
 
 export function accessGroups(
 	context: Context,
-	data: AccessData,
+	data: DataQuery,
 ): AccessResponse {
 	const groups: Set<string> = new Set();
 

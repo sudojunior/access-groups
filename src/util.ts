@@ -7,7 +7,20 @@ export function logAndExport<T>(key: string, input: T, message: string): void {
 }
 
 export interface DataQuery {
-	viewer: {
-		isSiteAdmin: boolean;
+	repository: {
+		owner: UserDataQuery;
+		collaborators: Array<{
+			node: UserDataQuery;
+			edges: {
+				permission: string;
+			};
+		}>;
 	};
+	user: UserDataQuery;
+}
+
+export interface UserDataQuery {
+	isSiteAdmin: boolean;
+	login: string;
+	__typename: string;
 }
