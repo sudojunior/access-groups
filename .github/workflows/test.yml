@@ -58,7 +58,7 @@ jobs:
           echo Run No.: ${{ github.run_number }}
           echo Run ID: ${{ github.run_id }}
       - uses: ./
-        name: access
+        id: access
         env:
           ACTIONS_STEP_DEBUG: true
         # with:
