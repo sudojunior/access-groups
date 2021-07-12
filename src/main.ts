@@ -7,9 +7,6 @@ import {DataQuery, logAndExport} from './util';
 
 async function run(): Promise<void> {
 	try {
-		console.log(`Actor: ${context.actor}`);
-		console.log(`Repo: ${JSON.stringify(context.repo)}`);
-
 		const {actor} = context; // Core.getInput('user') - future
 		const {owner, repo} = context.repo;
 

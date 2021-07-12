@@ -38,6 +38,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: octokit/graphql-action@v2
+        with: # assuming that viewer is the 'sender'
+          query: |
+            {
+              viewer {
+                login
+                isSiteAdmin
+              }
+            }
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Debug Context
         run: |
           echo Actor: ${{ github.actor }}
@@ -47,7 +58,13 @@ jobs:
           echo Run No.: ${{ github.run_number }}
           echo Run ID: ${{ github.run_id }}
       - uses: ./
+        name: access
         env:
           ACTIONS_STEP_DEBUG: true
         # with:
           # actor: ${{ matrix.actor }}
+      - name: Output Debug
+        run: |
+          echo "${{ github.actor }}"
+          echo "${{ join(steps.access.outputs.groups, ', ')"
+          echo "${{ steps.access.outputs.highest-group }}"
