@@ -12,7 +12,7 @@ export default class ConditionBuilder {
 	constructor(private readonly key: string) {}
 
 	useCheck(predicate: ConditionPredicate): ConditionBuilder {
-		this.check = (data, context) => predicate(data, context);
+		this.check = predicate;
 		return this;
 	}
 

@@ -1,24 +1,24 @@
 import * as core from '@actions/core';
-import { context, getOctokit } from '@actions/github';
-import { OctokitResponse } from '@octokit/types';
+import {context, getOctokit} from '@actions/github';
+import {OctokitResponse} from '@octokit/types';
 
-import { accessGroups } from './access';
-import { DataQuery, logAndExport } from './util';
+import {accessGroups} from './access';
+import {DataQuery, logAndExport} from './util';
 
 async function run(): Promise<void> {
 	try {
-		const { actor } = context; // core.getInput('user') - future
-		const { owner, repo } = context.repo;
+		const {actor} = context; // Core.getInput('user') - future
+		const {owner, repo} = context.repo;
 
-		const token: string = core.getInput('github-token', { required: false });
+		const token: string = core.getInput('github-token', {required: false});
 
 		const octokit = getOctokit(token, {
 			baseUrl: context.apiUrl,
 		});
 
-		const { data }: OctokitResponse<DataQuery> = await octokit.graphql(
+		const {data}: OctokitResponse<DataQuery> = await octokit.graphql(
 			`
-      query accessData($owner: String!, $actor: String!, $repo: String!) {
+      query accessData($owner: String!, $repo: String!, $actor: String!) {
 				user(login: $actor) {
 					...Access
 				}
@@ -27,9 +27,11 @@ async function run(): Promise<void> {
 						...Access
 					}
 					collaborators(query: $actor) {
-						nodes {
-							...Access
-							
+						edges {
+							node {
+								...Access
+							}
+							permission
 						}
 					}
 				}
@@ -39,7 +41,8 @@ async function run(): Promise<void> {
 				login
 				isViewer
 				isSiteAdmin
-			}
+				__typename
+			}			
       `,
 			{
 				owner,
@@ -50,10 +53,10 @@ async function run(): Promise<void> {
 
 		core.debug(`Access Data: ${JSON.stringify(data)}`);
 
-		const { groups, highestGroup } = accessGroups(context, data);
+		const {groups, highestGroup} = accessGroups(context, data);
 
-		logAndExport('groups', groups, `${context.actor} has access to %s`);
-		logAndExport('highest-group', highestGroup, `${context.actor} groups.first -> %s`);
+		logAndExport('groups', groups, `${actor} has access to %s`);
+		logAndExport('highest-group', highestGroup, `${actor} groups.first -> %s`);
 	} catch (error: unknown) {
 		core.setFailed((error as Error).message);
 	}
