@@ -29,7 +29,7 @@ async function run(): Promise<void> {
 					owner {
 						...Access
 					}
-					collaborators(query: $user) {
+					collaborators(query: $actor) {
 						edges {
 							node {
 								...Access
@@ -50,7 +50,7 @@ async function run(): Promise<void> {
 			{
 				owner,
 				repo,
-				user: actor,
+				actor,
 			},
 		);
 
