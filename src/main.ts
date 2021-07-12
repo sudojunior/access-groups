@@ -39,7 +39,6 @@ async function run(): Promise<void> {
 			
 			fragment Access on User {
 				login
-				isViewer
 				isSiteAdmin
 				__typename
 			}
