@@ -66,5 +66,5 @@ jobs:
       - name: Output Debug
         run: |
           echo ${{ github.actor }}
-          echo ${{ join(steps.access.outputs.groups, ', ')
+          echo ${{ join(steps.access.outputs.groups, ', ') }}
           echo ${{ steps.access.outputs.highest-group }}
