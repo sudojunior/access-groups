@@ -1,7 +1,4 @@
 # access-groups
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![build-test](https://github.com/sudojunior/access-groups/actions/workflows/test.yml/badge.svg)](https://github.com/sudojunior/access-groups/actions/workflows/test.yml)
 ![XO Code Style](https://badgen.net/badge/code%20style/XO/5ed9c7)
