@@ -150,7 +150,7 @@ function run() {
             const { owner, repo } = github_1.context.repo;
             const token = core.getInput('github-token', { required: false });
             const octokit = github_1.getOctokit(token, {
-                baseUrl: github_1.context.graphqlUrl,
+            // _baseUrl: context.graphqlUrl,
             });
             const { data } = yield octokit.graphql(`
 			query accessData($owner: String!, $repo: String!) {
