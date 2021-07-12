@@ -11,26 +11,45 @@ t.before(() => {
 	Object.assign(process.env, {
 		GITHUB_REPOSITORY: 'sudojunior/access-groups',
 		GITHUB_ACTOR: 'sudojunior'
-	})
-})
+	});
+});
 
 t.after(() => {
 	process.env = { ...ENV }
-})
+});
 
-const { groups, highestGroup } = accessGroups(context, {
-	viewer: { isSiteAdmin: false }
-})
+const mockUser = {
+	login: "sudojunior",
+	__typename: "User",
+	isSiteAdmin: false
+}
+
+const mockData = {
+	user: mockUser,
+	repository: {
+		owner: mockUser,
+		collaborators: [{
+			node: mockUser,
+			edges: { permission: "ADMIN" }
+		}]
+	}
+}
 
 t('actor is not a site admin', expect => {
+	const { groups } = accessGroups(context, mockData);
+
 	expect.assert(!groups.includes('site admin'))
 })
 
 t('actor is repository owner', expect => {
+	const { groups } = accessGroups(context, mockData);
+
 	expect.assert(groups.includes('repo owner'))
 })
 
 t("actor's highest group is 'repo owner'", expect => {
+	const { highestGroup } = accessGroups(context, mockData);
+
 	expect.is(highestGroup, 'repo owner')
 })
 

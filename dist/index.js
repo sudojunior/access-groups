@@ -58,7 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const condition_1 = __importDefault(__nccwpck_require__(2680));
-exports.default = new condition_1.default('repo owner').useCheck((data, context) => context.repo.owner === context.actor);
+exports.default = new condition_1.default('repo owner').useCheck((data, _context) => data.repository.owner.login === data.user.login);
 
 
 /***/ }),
@@ -73,7 +73,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const condition_1 = __importDefault(__nccwpck_require__(2680));
-exports.default = new condition_1.default('site admin').useCheck(data => data.viewer.isSiteAdmin);
+exports.default = new condition_1.default('site admin').useCheck((data, _context) => data.user.isSiteAdmin);
 
 
 /***/ }),
@@ -153,8 +153,8 @@ function run() {
                 baseUrl: github_1.context.apiUrl,
             });
             const { data } = yield octokit.graphql(`
-      query accessData($owner: String!, $repo: String!, $actor: String!) {
-				user(login: $actor) {
+			query accessData($owner: String!, $repo: String!, $user: String!) {
+				user(login: $user) {
 					...Access
 				}
 				repository(owner: $owner, name: $repo) {
@@ -174,19 +174,18 @@ function run() {
 			
 			fragment Access on User {
 				login
-				isViewer
 				isSiteAdmin
 				__typename
-			}			
-      `, {
+			}
+			`, {
                 owner,
                 repo,
                 actor,
             });
             core.debug(`Access Data: ${JSON.stringify(data)}`);
             const { groups, highestGroup } = access_1.accessGroups(github_1.context, data);
-            util_1.logAndExport('groups', groups, `${github_1.context.actor} has access to %s`);
-            util_1.logAndExport('highest-group', highestGroup, `${github_1.context.actor} groups.first -> %s`);
+            util_1.logAndExport('groups', groups, `${actor} has access to %s`);
+            util_1.logAndExport('highest-group', highestGroup, `${actor} groups.first -> %s`);
         }
         catch (error) {
             core.setFailed(error.message);
