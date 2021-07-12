@@ -65,6 +65,6 @@ jobs:
           # actor: ${{ matrix.actor }}
       - name: Output Debug
         run: |
-          echo "${{ github.actor }}"
-          echo "${{ join(steps.access.outputs.groups, ', ')"
-          echo "${{ steps.access.outputs.highest-group }}"
+          echo ${{ github.actor }}
+          echo ${{ join(steps.access.outputs.groups, ', ')
+          echo ${{ steps.access.outputs.highest-group }}
