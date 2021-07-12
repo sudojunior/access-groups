@@ -18,8 +18,8 @@ async function run(): Promise<void> {
 
 		const {data}: OctokitResponse<DataQuery> = await octokit.graphql(
 			`
-			query accessData($owner: String!, $repo: String!, $user: String!) {
-				user(login: $user) {
+			query accessData($owner: String!, $repo: String!, $actor: String!) {
+				user(login: $actor) {
 					...Access
 				}
 				repository(owner: $owner, name: $repo) {
