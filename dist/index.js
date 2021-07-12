@@ -57,8 +57,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const github_1 = __nccwpck_require__(5438);
 const condition_1 = __importDefault(__nccwpck_require__(2680));
-exports.default = new condition_1.default('repo owner').useCheck((data, _context) => data.repository.owner.login === data.user.login);
+exports.default = new condition_1.default('repo owner').useCheck((data, _context) => data.repository.owner.login === github_1.context.actor);
 
 
 /***/ }),
@@ -153,21 +154,10 @@ function run() {
                 baseUrl: github_1.context.apiUrl,
             });
             const { data } = yield octokit.graphql(`
-			query accessData($owner: String!, $repo: String!, $user: String!) {
-				user(login: $user) {
-					...Access
-				}
+			query accessData($owner: String!, $repo: String!) {
 				repository(owner: $owner, name: $repo) {
 					owner {
 						...Access
-					}
-					collaborators(query: $actor) {
-						edges {
-							node {
-								...Access
-							}
-							permission
-						}
 					}
 				}
 			}
@@ -180,7 +170,6 @@ function run() {
 			`, {
                 owner,
                 repo,
-                actor,
             });
             core.debug(`Access Data: ${JSON.stringify(data)}`);
             const { groups, highestGroup } = access_1.accessGroups(github_1.context, data);
