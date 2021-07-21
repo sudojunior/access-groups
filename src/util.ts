@@ -1,8 +1,6 @@
 import {format} from 'util';
 import {debug, setOutput} from '@actions/core';
 
-import {} from '@octokit/types/dist-types/';
-
 export function logAndExport<T>(key: string, input: T, message: string): void {
 	debug(format(`(%s) ${message}`, key, input));
 	setOutput(key, input);
@@ -30,17 +28,17 @@ export interface Repository {
 
 export type RepositoryOwnerUnion = RepositoryOwnerAsUser | RepositoryOwnerAsOrganization;
 
-interface RepositoryOwner {
+export interface RepositoryOwner {
 	__typename: string;
 	hasSponsorsListing: boolean;
 	isSponsoredBy: boolean; // (accountLogin: $actor)
 }
 
-interface RepositoryOwnerAsUser extends RepositoryOwner {
+export interface RepositoryOwnerAsUser extends RepositoryOwner {
 	login: string;
 }
 
-interface RepositoryOwnerAsOrganization extends RepositoryOwner {
+export interface RepositoryOwnerAsOrganization extends RepositoryOwner {
 	membersWithRole: {
 		edges: {
 			role: 'MEMBER' | 'ADMIN';
@@ -51,11 +49,11 @@ interface RepositoryOwnerAsOrganization extends RepositoryOwner {
 	};
 }
 
-interface RepositoryCollaborator {
+export interface RepositoryCollaborator {
 	node: {
 		login: string;
 	};
 	permission: RepositoryPermission;
 }
 
-type RepositoryPermission = 'ADMIN' | 'MAINTAIN' | 'WRITE' | 'TRIAGE' | 'READ';
+export type RepositoryPermission = 'ADMIN' | 'MAINTAIN' | 'WRITE' | 'TRIAGE' | 'READ';

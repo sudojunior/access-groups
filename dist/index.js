@@ -58,7 +58,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const condition_1 = __importDefault(__nccwpck_require__(2680));
-exports.default = new condition_1.default('repo owner').useCheck((data, context) => data.repository.owner.login === context.actor);
+exports.default = new condition_1.default('repo owner').useCheck((data, context) => {
+    if (data.repository.isInOrganization) {
+        return false;
+    }
+    const owner = data.repository.owner;
+    return (owner.login || context.repo.owner) === context.actor;
+});
 
 
 /***/ }),
@@ -184,17 +190,14 @@ function run() {
 						}
 					}
 					collaborators(query: $actor) {
-						edges {        
+						edges {
+							node {
+								login
+							}
 							permission
 						}
 					}
 				}
-			}
-			
-			fragment Access on User {
-				login
-				isSiteAdmin
-				__typename
 			}
 			`, {
                 owner,
