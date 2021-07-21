@@ -15,31 +15,47 @@ async function run(): Promise<void> {
 
 		const data: DataQuery = await octokit.graphql(
 			`
-			query accessData($owner: String!, $repo: String!, $actor: String!) {
+			query accessData($owner: String!, $actor: String!, $repo: String!) {
+				user(login: $actor) {
+					isSiteAdmin
+					isBountyHunter
+					isCampusExpert
+					isDeveloperProgramMember
+				}
 				repository(owner: $owner, name: $repo) {
+					isInOrganization
+					
 					owner {
-						...Access
+						__typename
+						
+						... on User {
+							login
+							hasSponsorsListing
+							isSponsoredBy(accountLogin: $actor)
+						}
+						
+						... on Organization {
+							hasSponsorsListing
+							isSponsoredBy(accountLogin: $actor)
+							membersWithRole {
+								edges {
+									role
+									node {
+										login
+									}
+								}
+							}
+						}
 					}
-
 					collaborators(query: $actor) {
 						edges {
 							node {
-								...Access
+								login
 							}
 							permission
 						}
 					}
 				}
-
-				user(login: $actor) {
-					...Access
-				}
-			}
-			
-			fragment Access on User {
-				login
-				isSiteAdmin
-				__typename
 			}
 			`,
 			{

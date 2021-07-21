@@ -151,24 +151,43 @@ function run() {
             const token = core.getInput('github-token');
             const octokit = github_1.getOctokit(token);
             const data = yield octokit.graphql(`
-			query accessData($owner: String!, $repo: String!, $actor: String!) {
+			query accessData($owner: String!, $actor: String!, $repo: String!) {
+				user(login: $actor) {
+					isSiteAdmin
+					isBountyHunter
+					isCampusExpert
+					isDeveloperProgramMember
+				}
 				repository(owner: $owner, name: $repo) {
+					isInOrganization
+					
 					owner {
-						...Access
-					}
-
-					collaborators(query: $actor) {
-						edges {
-							node {
-								...Access
+						__typename
+						
+						... on User {
+							login
+							hasSponsorsListing
+							isSponsoredBy(accountLogin: $actor)
+						}
+						
+						... on Organization {
+							hasSponsorsListing
+							isSponsoredBy(accountLogin: $actor)
+							membersWithRole {
+								edges {
+									role
+									node {
+										login
+									}
+								}
 							}
+						}
+					}
+					collaborators(query: $actor) {
+						edges {        
 							permission
 						}
 					}
-				}
-
-				user(login: $actor) {
-					...Access
 				}
 			}
 			
