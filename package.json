@@ -6,12 +6,14 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write **/*.ts",
-    "format-check": "prettier --check **/*.ts",
-    "lint": "eslint src/**/*.ts",
+    "lint": "xo src/**/*.ts",
+    "format": "xo src/**/*.ts --fix",
     "package": "ncc build --source-map --license licenses.txt",
-    "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
+    "test": "ava",
+    "test:debug": "ava --verbose",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate",
+    "all": "yarn build && yarn lint && yarn package && yarn test"
   },
   "repository": {
     "type": "git",
@@ -26,21 +28,58 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/github": "^5.0.0"
+    "@actions/github": "^5.0.0",
+    "@octokit/types": "^6.18.1"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.24",
     "@types/node": "^14.14.9",
-    "@typescript-eslint/parser": "^4.8.1",
+    "@typescript-eslint/parser": "^4.28.2",
     "@vercel/ncc": "^0.28.6",
-    "eslint": "^7.17.0",
+    "all-contributors-cli": "^6.20.0",
+    "ava": "^3.15.0",
+    "eslint": "^7.30.0",
+    "eslint-config-xo": "^0.37.0",
+    "eslint-config-xo-typescript": "^0.43.0",
     "eslint-plugin-github": "^4.1.1",
-    "eslint-plugin-jest": "^24.1.3",
-    "jest": "^26.6.3",
-    "jest-circus": "^27.0.6",
     "js-yaml": "^4.1.0",
     "prettier": "2.2.1",
-    "ts-jest": "^26.4.4",
-    "typescript": "^4.3.5"
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5",
+    "xo": "^0.41.0"
+  },
+  "ava": {
+    "files": [
+      "tests/**/*.ts"
+    ],
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "failWithoutAssertions": false,
+    "environmentVariables": {
+      "GITHUB_REPOSITORY": "sudojunior/access-groups",
+      "GITHUB_ACTOR": "sudojunior"
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "xo",
+      "xo-typescript"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "parser": "@typescript-eslint/parser"
+  },
+  "xo": {
+    "files": [
+      "*.ts"
+    ],
+    "rules": {
+      "unicorn/prefer-node-protocol": "off",
+      "capitalized-comments": "off"
+    }
   }
 }

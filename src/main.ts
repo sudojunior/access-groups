@@ -1,54 +1,79 @@
-import * as core from '@actions/core'
-import {context, getOctokit} from '@actions/github'
-import {OctokitResponse} from '@octokit/types'
+import * as core from '@actions/core';
+import {context, getOctokit} from '@actions/github';
 
-import {AccessData, accessGroups} from './access'
+import {accessGroups} from './access';
+import {DataQuery, logAndExport} from './util';
 
 async function run(): Promise<void> {
-  try {
-    const user = context.actor // core.getInput('user') - future
-    const repo = context.payload.repository?.full_name
-    const token: string = core.getInput('github-token') // mirroring 'actions/github-script'
+	try {
+		const {actor} = context; // Core.getInput('user') - future
+		const {owner, repo} = context.repo;
 
-    // const endpoint = core.getInput('endpoint')
+		const token: string = core.getInput('github-token');
 
-    const octokit = getOctokit(token)
+		const octokit = getOctokit(token);
 
-    const {data}: OctokitResponse<AccessData> = await octokit.request(
-      `
-      {
-        viewer {
-          isViewer
-          isEmployee
-          isHireable
-          isSiteAdmin
-          isGitHubStar
-          isBountyHunter
-          isCampusExpert
-          isSponsoringViewer
-          isDeveloperProgramMember
-        }
-      }
-      `
-    )
+		const data: DataQuery = await octokit.graphql(
+			`
+			query accessData($owner: String!, $actor: String!, $repo: String!) {
+				user(login: $actor) {
+					isSiteAdmin
+					isBountyHunter
+					isCampusExpert
+					isDeveloperProgramMember
+				}
+				repository(owner: $owner, name: $repo) {
+					isInOrganization
+					
+					owner {
+						__typename
+						
+						... on User {
+							login
+							hasSponsorsListing
+							isSponsoredBy(accountLogin: $actor)
+						}
+						
+						... on Organization {
+							hasSponsorsListing
+							isSponsoredBy(accountLogin: $actor)
+							membersWithRole {
+								edges {
+									role
+									node {
+										login
+									}
+								}
+							}
+						}
+					}
+					collaborators(query: $actor) {
+						edges {
+							node {
+								login
+							}
+							permission
+						}
+					}
+				}
+			}
+			`,
+			{
+				owner,
+				repo,
+				actor,
+			},
+		);
 
-    core.debug(`Access Data: ${JSON.stringify(data)}`)
+		core.debug(`Access Data: ${JSON.stringify(data)}`);
 
-    const {groups} = accessGroups(
-      {
-        // endpoint
-        user,
-        repo
-      },
-      data
-    )
+		const {groups, highestGroup} = accessGroups(context, data);
 
-    core.debug(`${user} has access to ${groups.join(', ')}`)
-
-    core.setOutput('groups', groups)
-  } catch (error) {
-    core.setFailed(error.message)
-  }
+		logAndExport('groups', groups, `${actor} has access to %s`);
+		logAndExport('highest-group', highestGroup, `${actor} groups.first -> %s`);
+	} catch (error: unknown) {
+		core.setFailed((error as Error));
+	}
 }
 
-run()
+void run();
