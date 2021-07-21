@@ -73,7 +73,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const condition_1 = __importDefault(__nccwpck_require__(2680));
-exports.default = new condition_1.default('site admin').useCheck((_data, _context) => false);
+exports.default = new condition_1.default('site admin').useCheck((data, _context) => data.user.isSiteAdmin);
 
 
 /***/ }),
@@ -149,9 +149,7 @@ function run() {
             const { actor } = github_1.context; // Core.getInput('user') - future
             const { owner, repo } = github_1.context.repo;
             const token = core.getInput('github-token');
-            const octokit = github_1.getOctokit(token, {
-            // _baseUrl: context.graphqlUrl,
-            });
+            const octokit = github_1.getOctokit(token);
             const data = yield octokit.graphql(`
 			query accessData($owner: String!, $repo: String!, $actor: String!) {
 				repository(owner: $owner, name: $repo) {

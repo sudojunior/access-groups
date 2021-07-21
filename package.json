@@ -13,7 +13,7 @@
     "test:debug": "ava --verbose",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "run-all": "yarn build && yarn lint && yarn package && yarn test"
+    "all": "yarn build && yarn lint && yarn package && yarn test"
   },
   "repository": {
     "type": "git",

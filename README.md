@@ -19,7 +19,8 @@ An action to help determine what groups a user belongs to.
 *Will allow for scope use of context info like organization and sponsors (maybe...).*
 
 ```yaml
-- uses: sudojunior/access-groups@main
+- id: groups
+  uses: sudojunior/access-groups@main
   with:
     github-token: ${{ github.token }} # as default
 ```
@@ -43,28 +44,46 @@ It is worth noting that the data for the query to determine other groups is ther
 ## Usage
 
 ```yaml
-- uses: sudojunior/access-groups@main # or specific tag
+- id: access
+  uses: sudojunior/access-groups@main # or specific tag
+  
+- if: ${{ include(steps.access.outputs.groups, "repo collaborator") }}
+  # only run if the user is a repo collaborator
+  uses: actions/github-script@v4.0.2
+  with:
+    script: |
+      await github.issues.createComment({
+        issue_number: context.issue.number,
+        body: "You're a collaborator on this repository!",
+        owner: context.repo.owner,
+        repo: context.repo.repo
+      })
 ```
 
 ### Access groups
 
-| Group                          | Issue                                                        |
-| ------------------------------ | ------------------------------------------------------------ |
-| Organization Member            | [#8](https://github.com/sudojunior/access-groups/issues/8)   |
-| Repo Collaborator              | [#9](https://github.com/sudojunior/access-groups/issues/9)   |
-| Repo Admin (Organization)      | [#11](https://github.com/sudojunior/access-groups/issues/11) |
-| Repo Maintainer (Organization) | [#12](https://github.com/sudojunior/access-groups/issues/12) |
-| Repo Collaborator              | [#13](https://github.com/sudojunior/access-groups/issues/13) |
-| Repo Triage (Organization)     | [#14](https://github.com/sudojunior/access-groups/issues/14) |
-| Context Author (Issue / PR)    | [#15](https://github.com/sudojunior/access-groups/issues/15) |
-| Campus Expert (Education)      | [#16](https://github.com/sudojunior/access-groups/issues/16) |
-| Bounty Hunter (Security)       | [#17](https://github.com/sudojunior/access-groups/issues/17) |
-| Developer Program Member       | [#18](https://github.com/sudojunior/access-groups/issues/18) |
-| Sponsor (User / Organization)  | [#19](https://github.com/sudojunior/access-groups/issues/19) |
-| Read / Observer (Organization) | [#20](https://github.com/sudojunior/access-groups/issues/20) |
-| Stargazer                      | [#25](https://github.com/sudojunior/access-groups/issues/25) |
-| Follower (User)                | [#26](https://github.com/sudojunior/access-groups/issues/26) |
-| Repo Contributor               | [#27](https://github.com/sudojunior/access-groups/issues/27) |
+- `site admin` = Covers both public deployment for GitHub Staff and Enterprise Deployment
+- `repo owner` = (If under user scope) is current actor the owner of this repository?
+
+#### Future
+
+- (Scope) Organization
+  - [Member (#8)](https://github.com/sudojunior/access-groups/issues/8)
+  - [Repo Admin (#11)](https://github.com/sudojunior/access-groups/issues/11)
+  - [Repo Maintainer (#12)](https://github.com/sudojunior/access-groups/issues/12)
+  - [Repo Triage (#14)](https://github.com/sudojunior/access-groups/issues/14)
+  - [Read / Observer (#20)](https://github.com/sudojunior/access-groups/issues/20)
+- (Scope) User
+  - [Follower (#26)](https://github.com/sudojunior/access-groups/issues/26)
+  - [Campus Expert (#16)](https://github.com/sudojunior/access-groups/issues/16)
+  - [Bounty Hunter (#17)](https://github.com/sudojunior/access-groups/issues/17)
+  - [Developer Program Member (#18)](https://github.com/sudojunior/access-groups/issues/18)
+- (Scope) Repository
+  - [Stargazer (#25)](https://github.com/sudojunior/access-groups/issues/25)
+  - [Repo Collaborator (#9)](https://github.com/sudojunior/access-groups/issues/9)
+  - [Context Author {Issue / PR / Discussion?} (#15)](https://github.com/sudojunior/access-groups/issues/15)
+  - [Repo Contributor (#27)](https://github.com/sudojunior/access-groups/issues/27)
+- [Sponsor {User / Organization} (#19)](https://github.com/sudojunior/access-groups/issues/19)
 
 ## Contributors
 

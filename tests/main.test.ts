@@ -4,16 +4,10 @@ import { context } from '@actions/github'
 import { accessGroups } from '../src/access'
 import { DataQuery } from '../src/util'
 
-const ENV = process.env
+const ENV = process.env;
 
 // Should figure out a way to do matrix-like testing offline...
 // ... and to write tests correctly
-
-const mockUser = {
-	login: "sudojunior",
-	__typename: "User",
-	isSiteAdmin: false
-}
 
 const mockData: DataQuery = {
 	"user": {
@@ -42,23 +36,22 @@ const mockData: DataQuery = {
 	}
 }
 
-t('actor is not a site admin', expect => {
+t('actor is not a site admin', t => {
 	const { groups } = accessGroups(context, mockData);
 
-	expect.assert(!groups.includes('site admin'))
+	t.assert(!groups.includes('site admin'));
 })
 
 t('actor is repository owner', expect => {
 	const { groups } = accessGroups(context, mockData);
 
-	expect.log(`${mockData.repository.owner.login} (repo owner) -> ${context.actor} (context actor)`)
-	expect.assert(groups.includes('repo owner'))
+	expect.assert(groups.includes('repo owner'));
 })
 
 t("actor's highest group is 'repo owner'", expect => {
 	const { highestGroup } = accessGroups(context, mockData);
 
-	expect.is(highestGroup, 'repo owner')
+	expect.is(highestGroup, 'repo owner');
 })
 
 t.todo('actor is a repository collaborator')
