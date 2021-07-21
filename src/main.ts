@@ -1,6 +1,5 @@
 import * as core from '@actions/core';
 import {context, getOctokit} from '@actions/github';
-import {OctokitResponse} from '@octokit/types';
 
 import {accessGroups} from './access';
 import {DataQuery, logAndExport} from './util';
@@ -10,19 +9,32 @@ async function run(): Promise<void> {
 		const {actor} = context; // Core.getInput('user') - future
 		const {owner, repo} = context.repo;
 
-		const token: string = core.getInput('github-token', {required: false});
+		const token: string = core.getInput('github-token');
 
 		const octokit = getOctokit(token, {
 			// _baseUrl: context.graphqlUrl,
 		});
 
-		const {data}: OctokitResponse<DataQuery> = await octokit.graphql(
+		const data: DataQuery = await octokit.graphql(
 			`
-			query accessData($owner: String!, $repo: String!) {
+			query accessData($owner: String!, $repo: String!, $actor: String!) {
 				repository(owner: $owner, name: $repo) {
 					owner {
 						...Access
 					}
+
+					collaborators(query: $actor) {
+						edges {
+							node {
+								...Access
+							}
+							permission
+						}
+					}
+				}
+
+				user(login: $actor) {
+					...Access
 				}
 			}
 			
@@ -35,6 +47,7 @@ async function run(): Promise<void> {
 			{
 				owner,
 				repo,
+				actor,
 			},
 		);
 
@@ -45,7 +58,7 @@ async function run(): Promise<void> {
 		logAndExport('groups', groups, `${actor} has access to %s`);
 		logAndExport('highest-group', highestGroup, `${actor} groups.first -> %s`);
 	} catch (error: unknown) {
-		core.setFailed((error as Error).message);
+		core.setFailed((error as Error));
 	}
 }
 

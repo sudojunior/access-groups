@@ -148,16 +148,29 @@ function run() {
         try {
             const { actor } = github_1.context; // Core.getInput('user') - future
             const { owner, repo } = github_1.context.repo;
-            const token = core.getInput('github-token', { required: false });
+            const token = core.getInput('github-token');
             const octokit = github_1.getOctokit(token, {
             // _baseUrl: context.graphqlUrl,
             });
-            const { data } = yield octokit.graphql(`
-			query accessData($owner: String!, $repo: String!) {
+            const data = yield octokit.graphql(`
+			query accessData($owner: String!, $repo: String!, $actor: String!) {
 				repository(owner: $owner, name: $repo) {
 					owner {
 						...Access
 					}
+
+					collaborators(query: $actor) {
+						edges {
+							node {
+								...Access
+							}
+							permission
+						}
+					}
+				}
+
+				user(login: $actor) {
+					...Access
 				}
 			}
 			
@@ -169,6 +182,7 @@ function run() {
 			`, {
                 owner,
                 repo,
+                actor,
             });
             core.debug(`Access Data: ${JSON.stringify(data)}`);
             const { groups, highestGroup } = access_1.accessGroups(github_1.context, data);
@@ -176,7 +190,7 @@ function run() {
             util_1.logAndExport('highest-group', highestGroup, `${actor} groups.first -> %s`);
         }
         catch (error) {
-            core.setFailed(error.message);
+            core.setFailed(error);
         }
     });
 }

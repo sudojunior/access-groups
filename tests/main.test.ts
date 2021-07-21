@@ -2,6 +2,7 @@ import t from 'ava'
 import { context } from '@actions/github'
 
 import { accessGroups } from '../src/access'
+import { DataQuery } from '../src/util'
 
 const ENV = process.env
 
@@ -14,17 +15,37 @@ const mockUser = {
 	isSiteAdmin: false
 }
 
-const mockData = {
-	repository: {
-		owner: mockUser,
+const mockData: DataQuery = {
+	"user": {
+		"login": "sudojunior",
+		"isSiteAdmin": false,
+		"__typename": "User"
+	},
+	"repository": {
+		"owner": {
+			"login": "sudojunior",
+			"isSiteAdmin": false,
+			"__typename": "User"
+		},
+		"collaborators": {
+			"edges": [
+				{
+					"node": {
+						"login": "sudojunior",
+						"isSiteAdmin": false,
+						"__typename": "User"
+					},
+					"permission": "ADMIN"
+				}
+			]
+		}
 	}
 }
 
-t.failing('actor is not a site admin', expect => {
+t('actor is not a site admin', expect => {
 	const { groups } = accessGroups(context, mockData);
 
 	expect.assert(!groups.includes('site admin'))
-	expect.fail("Check disabled")
 })
 
 t('actor is repository owner', expect => {
