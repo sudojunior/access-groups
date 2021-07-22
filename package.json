@@ -42,7 +42,7 @@
     "eslint-config-xo-typescript": "^0.43.0",
     "eslint-plugin-github": "^4.1.5",
     "js-yaml": "^4.1.0",
-    "prettier": "2.2.1",
+    "prettier": "2.3.2",
     "ts-node": "^10.1.0",
     "typescript": "^4.3.5",
     "xo": "^0.42.0"
