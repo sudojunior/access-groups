@@ -1,0 +1,30 @@
+name: Lint & Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Install
+        run: yarn
+
+      - name: XO Format
+        run: yarn format
+
+      - name: Build
+
+      - name: Add and Commit
+        run: |
+          git add .
+          git commit -m "auto(lint): Actions build for updated distribution."

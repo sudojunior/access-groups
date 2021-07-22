@@ -1,4 +1,4 @@
-name: 'build-test'
+name: 'Test'
 on: # rebuild any PRs and main branch changes
   pull_request:
   push:
@@ -10,20 +10,20 @@ jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: |
-          yarn
-      - run: yarn all
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Install
+        run: yarn
 
-      # Disabled for now, bash returns all files in the project found on github.
-      - if: ${{ false }}
-        run: |
-          if [ -z "$(git status --porcelain ./dist)" ]; then
-            echo "Unstaged changes detected in ~/dist/* folder."
-            exit 1
-          fi
+      - name: Test
+        # Some of the test cases cannot be properly tested until they are run as an action.
+        # As a result, workarounds may be found to ensure a certain value can be found before an alternative is considered.
+        run: yarn test
 
-  test: # make sure the action works on a clean machine without building
+  clean-test: # make sure the action works on a clean machine without building
+    name: 'Test action'
+    needs: [build]
     strategy:
       matrix:
         actor:
@@ -53,8 +53,6 @@ jobs:
           echo Run ID: ${{ github.run_id }}
       - uses: ./
         id: access
-        env:
-          ACTIONS_STEP_DEBUG: true
         # with:
           # actor: ${{ matrix.actor }}
       - name: Output Debug

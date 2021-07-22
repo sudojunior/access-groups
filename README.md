@@ -1,6 +1,7 @@
 # access-groups
 
-[![build-test](https://github.com/sudojunior/access-groups/actions/workflows/test.yml/badge.svg)](https://github.com/sudojunior/access-groups/actions/workflows/test.yml)
+[![Test](https://github.com/sudojunior/access-groups/actions/workflows/test.yml/badge.svg)](https://github.com/sudojunior/access-groups/actions/workflows/test.yml)
+[![CodeQL](https://github.com/sudojunior/access-groups/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/sudojunior/access-groups/actions/workflows/codeql-analysis.yml)
 ![XO Code Style](https://badgen.net/badge/code%20style/XO/5ed9c7)
 ![Stargazers](https://badgen.net/github/stars/sudojunior/access-groups)<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
@@ -11,6 +12,25 @@ An action to help determine what groups a user belongs to.
 **This action does not create any GitHub entities or modify repositories.**
 
 > Future releases may include a fail-if clause, which would act as a fast fail for that step or job.
+
+## Usage
+
+```yaml
+- id: access
+  uses: sudojunior/access-groups@main # or specific tag
+  
+- if: ${{ include(steps.access.outputs.groups, "repo collaborator") }}
+  # only run if the user is a repo collaborator
+  uses: actions/github-script@v4.0.2
+  with:
+    script: |
+      await github.issues.createComment({
+        issue_number: context.issue.number,
+        body: "You're a collaborator on this repository!",
+        owner: context.repo.owner,
+        repo: context.repo.repo
+      })
+```
 
 ## Arguments
 
@@ -34,31 +54,7 @@ An action to help determine what groups a user belongs to.
 
 GitHub has a set of adaptive groups that exist under the hood to control permissions per repository and organization.
 
-Groups for v1 are currently being limited to the following:
-
-- `site admin` - Actor is a Site Admin for this instance
-- `repo owner` - Actor is the owner of the current repository
-
-It is worth noting that the data for the query to determine other groups is there, just not implemented yet.
-
-## Usage
-
-```yaml
-- id: access
-  uses: sudojunior/access-groups@main # or specific tag
-  
-- if: ${{ include(steps.access.outputs.groups, "repo collaborator") }}
-  # only run if the user is a repo collaborator
-  uses: actions/github-script@v4.0.2
-  with:
-    script: |
-      await github.issues.createComment({
-        issue_number: context.issue.number,
-        body: "You're a collaborator on this repository!",
-        owner: context.repo.owner,
-        repo: context.repo.repo
-      })
-```
+It is worth noting that the data for the query to determine other groups is there, but may not implemented yet.
 
 ### Access groups
 
@@ -84,6 +80,22 @@ It is worth noting that the data for the query to determine other groups is ther
   - [Context Author {Issue / PR / Discussion?} (#15)](https://github.com/sudojunior/access-groups/issues/15)
   - [Repo Contributor (#27)](https://github.com/sudojunior/access-groups/issues/27)
 - [Sponsor {User / Organization} (#19)](https://github.com/sudojunior/access-groups/issues/19)
+
+#### Distant Future
+
+*Using GraphQL notation, instead of group identifiers.*
+
+- `isEmployee` = Checks if the actor is a GitHub Employee
+- `isHireable` = Checks if the actor is Hireable
+- `isGitHubStar` = Checks if the actor is part of the GitHub Star program
+- `repositoriesContributedTo` = Checks if the actor has contributed to any repositories *other than their own, unless specified.
+  (quantity required - `first` or `last`)
+
+---
+
+- Organization Team Member (wildcard)  
+  Contains child teams, and team roles (MAINTAINER, MEMBER)  
+  (Dangerous recursion with child teams)
 
 ## Contributors
 
