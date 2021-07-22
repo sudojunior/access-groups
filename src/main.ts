@@ -10,10 +10,10 @@ async function run(): Promise<void> {
 		const {owner, repo} = context.repo;
 
 		if (actor.endsWith('[bot]')) {
-			core.info('Forceful termination, actor is a bot (variables are empty).');
+			core.warning('Forceful termination, actor is a bot (variables are empty).');
 			core.setOutput('groups', []);
 			core.setOutput('highest-group', '');
-			process.exit();
+			return;
 		}
 
 		const token: string = core.getInput('github-token');
