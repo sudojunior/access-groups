@@ -23,6 +23,7 @@ jobs:
         run: yarn format
 
       - name: Build
+        run: yarn build
 
       - name: Add and Commit
         run: |
