@@ -1,3 +1,6 @@
+# Based on Snazzah/slash-create auto lint
+# https://github.com/Snazzah/slash-create/blob/master/.github/workflows/lint.yml
+
 name: Lint & Build
 
 on:
@@ -26,6 +29,9 @@ jobs:
         run: yarn build
 
       - name: Add and Commit
-        run: |
-          git add .
-          git commit -m "auto(lint): Actions build for updated distribution."
+        uses: EndBug/add-and-commit@v4
+        with:
+          add: dist
+          message: "chore(format & build): Actions auto-build"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
