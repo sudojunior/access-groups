@@ -60,6 +60,7 @@ It is worth noting that the data for the query to determine other groups is ther
 
 - `site admin` = Covers both public deployment for GitHub Staff and Enterprise Deployment
 - `repo owner` = (If under user scope) is current actor the owner of this repository?
+- `repo admin` = is current actor an admin of this repository?
 
 #### Future
 
