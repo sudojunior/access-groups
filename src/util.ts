@@ -35,10 +35,12 @@ export interface RepositoryOwner {
 }
 
 export interface RepositoryOwnerAsUser extends RepositoryOwner {
+	__typename: 'User';
 	login: string;
 }
 
 export interface RepositoryOwnerAsOrganization extends RepositoryOwner {
+	__typename: 'Organization';
 	membersWithRole: {
 		edges: {
 			role: 'MEMBER' | 'ADMIN';

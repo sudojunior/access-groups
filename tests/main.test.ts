@@ -57,7 +57,11 @@ t("actor's highest group is 'repo owner'", expect => {
 t.todo('actor is a repository collaborator');
 // #region organization permissions
 t.todo('actor is an organization member (skip if non-org owner)');
-t.todo('actor is a repository admin');
+t('actor is a repository admin', expect => {
+	const { groups } = accessGroups(context, mockData);
+
+	expect.assert(groups.includes('repo admin'));
+});
 t.todo('actor is a repository maintainer');
 t.todo('actor is a repository triage member');
 t.todo('actor is author of issue / pull request in the current scope');

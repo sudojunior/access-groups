@@ -42,8 +42,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const site_admin_1 = __importDefault(__nccwpck_require__(5874));
 const repo_owner_1 = __importDefault(__nccwpck_require__(1590));
-const checks = [site_admin_1.default.build(), repo_owner_1.default.build()];
+const repo_admin_1 = __importDefault(__nccwpck_require__(3887));
+const checks = [
+    site_admin_1.default.build(),
+    repo_owner_1.default.build(),
+    repo_admin_1.default.build(),
+];
 exports.default = checks;
+
+
+/***/ }),
+
+/***/ 3887:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const condition_1 = __importDefault(__nccwpck_require__(2680));
+exports.default = new condition_1.default('repo admin').useCheck((data, context) => data.repository.collaborators.edges.some(edge => edge.permission === 'ADMIN' && (edge.node.login === context.actor)));
 
 
 /***/ }),
