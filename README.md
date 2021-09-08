@@ -59,28 +59,34 @@ It is worth noting that the data for the query to determine other groups is ther
 ### Access groups
 
 - `site admin` = Covers both public deployment for GitHub Staff and Enterprise Deployment
-- `repo owner` = (If under user scope) is current actor the owner of this repository?
-- `repo admin` = is current actor an admin of this repository?
+- `repo owner` -> `site admin` = (If under user scope) is current actor **the owner** of this repository?
+- `repo admin` -> `site admin` = is current actor an **admin** of this repository?
+- `repo maintainer` -> `repo admin` = is current actor a **maintainer** of this repository?
+- `repo triage` -> `repo maintainer` = is current actor a member of the **triage** team in this repository?
+- `repo observer` -> `repo triage` = is current actor an **observer** to this repository?
+- `bounty-hunter` = is current actor a [bounty hunter](https://bounty.github.com/)?
+- `campus-expert` = is current actor a [campus expert](https://education.github.com/experts)? (may include alumni)
+- `developer-program-member` = is current actor a [developer program member](https://developer.github.com/program/)?
 
 #### Future
 
 - (Scope) Organization
-  - [Member (#8)](https://github.com/sudojunior/access-groups/issues/8)
-  - [Repo Admin (#11)](https://github.com/sudojunior/access-groups/issues/11)
-  - [Repo Maintainer (#12)](https://github.com/sudojunior/access-groups/issues/12)
-  - [Repo Triage (#14)](https://github.com/sudojunior/access-groups/issues/14)
-  - [Read / Observer (#20)](https://github.com/sudojunior/access-groups/issues/20)
+  - [ ] [Member (#8)](https://github.com/sudojunior/access-groups/issues/8)
+  - [x] [Repo Admin (#11)](https://github.com/sudojunior/access-groups/issues/11)
+  - [x] [Repo Maintainer (#12)](https://github.com/sudojunior/access-groups/issues/12)
+  - [x] [Repo Triage (#14)](https://github.com/sudojunior/access-groups/issues/14)
+  - [ ] [Read / Observer (#20)](https://github.com/sudojunior/access-groups/issues/20)
 - (Scope) User
-  - [Follower (#26)](https://github.com/sudojunior/access-groups/issues/26)
-  - [Campus Expert (#16)](https://github.com/sudojunior/access-groups/issues/16)
-  - [Bounty Hunter (#17)](https://github.com/sudojunior/access-groups/issues/17)
-  - [Developer Program Member (#18)](https://github.com/sudojunior/access-groups/issues/18)
+  - [ ] [Follower (#26)](https://github.com/sudojunior/access-groups/issues/26)
+  - [x] [Campus Expert (#16)](https://github.com/sudojunior/access-groups/issues/16)
+  - [x] [Bounty Hunter (#17)](https://github.com/sudojunior/access-groups/issues/17)
+  - [x] [Developer Program Member (#18)](https://github.com/sudojunior/access-groups/issues/18)
 - (Scope) Repository
-  - [Stargazer (#25)](https://github.com/sudojunior/access-groups/issues/25)
-  - [Repo Collaborator (#9)](https://github.com/sudojunior/access-groups/issues/9)
-  - [Context Author {Issue / PR / Discussion?} (#15)](https://github.com/sudojunior/access-groups/issues/15)
-  - [Repo Contributor (#27)](https://github.com/sudojunior/access-groups/issues/27)
-- [Sponsor {User / Organization} (#19)](https://github.com/sudojunior/access-groups/issues/19)
+  - [ ] [Stargazer (#25)](https://github.com/sudojunior/access-groups/issues/25)
+  - [ ] [Repo Collaborator (#9)](https://github.com/sudojunior/access-groups/issues/9)
+  - [ ] [Context Author {Issue / PR / Discussion?} (#15)](https://github.com/sudojunior/access-groups/issues/15)
+  - [ ] [Repo Contributor (#27)](https://github.com/sudojunior/access-groups/issues/27)
+- [ ] [Sponsor {User / Organization} (#19)](https://github.com/sudojunior/access-groups/issues/19)
 
 #### Distant Future
 
