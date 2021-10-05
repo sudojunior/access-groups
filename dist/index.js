@@ -31,6 +31,54 @@ exports.accessGroups = accessGroups;
 
 /***/ }),
 
+/***/ 6168:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const condition_1 = __importDefault(__nccwpck_require__(2680));
+exports.default = new condition_1.default('bounty-hunter')
+    .useCheck(data => data.user.isBountyHunter);
+
+
+/***/ }),
+
+/***/ 7360:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const condition_1 = __importDefault(__nccwpck_require__(2680));
+exports.default = new condition_1.default('campus-expert')
+    .useCheck(data => data.user.isCampusExpert);
+
+
+/***/ }),
+
+/***/ 2792:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const condition_1 = __importDefault(__nccwpck_require__(2680));
+exports.default = new condition_1.default('developer-program-member')
+    .useCheck(data => data.user.isDeveloperProgramMember);
+
+
+/***/ }),
+
 /***/ 4799:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -43,10 +91,22 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const site_admin_1 = __importDefault(__nccwpck_require__(5874));
 const repo_owner_1 = __importDefault(__nccwpck_require__(1590));
 const repo_admin_1 = __importDefault(__nccwpck_require__(3887));
+const repo_maintainer_1 = __importDefault(__nccwpck_require__(3742));
+const repo_triage_1 = __importDefault(__nccwpck_require__(769));
+const repo_observer_1 = __importDefault(__nccwpck_require__(888));
+const bounty_hunter_1 = __importDefault(__nccwpck_require__(6168));
+const campus_expert_1 = __importDefault(__nccwpck_require__(7360));
+const developer_program_member_1 = __importDefault(__nccwpck_require__(2792));
 const checks = [
     site_admin_1.default.build(),
     repo_owner_1.default.build(),
     repo_admin_1.default.build(),
+    repo_maintainer_1.default.build(),
+    repo_triage_1.default.build(),
+    repo_observer_1.default.build(),
+    bounty_hunter_1.default.build(),
+    campus_expert_1.default.build(),
+    developer_program_member_1.default.build(),
 ];
 exports.default = checks;
 
@@ -63,7 +123,51 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const condition_1 = __importDefault(__nccwpck_require__(2680));
-exports.default = new condition_1.default('repo admin').useCheck((data, context) => data.repository.collaborators.edges.some(edge => edge.permission === 'ADMIN' && (edge.node.login === context.actor)));
+const site_admin_1 = __importDefault(__nccwpck_require__(5874));
+exports.default = new condition_1.default('repo admin')
+    .extend(site_admin_1.default) // site admin is granted access to all repos (even if they aren't a contributor to the repo)
+    .runIf(data => data.repository.isInOrganization)
+    .useCheck((data, context) => data.repository.collaborators.edges.some(edge => edge.permission === 'ADMIN' && (edge.node.login === context.actor)));
+
+
+/***/ }),
+
+/***/ 3742:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const condition_1 = __importDefault(__nccwpck_require__(2680));
+const repo_admin_1 = __importDefault(__nccwpck_require__(3887));
+exports.default = new condition_1.default('repo maintainer')
+    .extend(repo_admin_1.default)
+    .runIf(data => data.repository.isInOrganization)
+    .useCheck((data, context) => data.repository.collaborators.edges.some(edge => edge.permission === 'MAINTAIN' && (edge.node.login === context.actor)));
+
+
+/***/ }),
+
+/***/ 888:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const condition_1 = __importDefault(__nccwpck_require__(2680));
+const repo_triage_1 = __importDefault(__nccwpck_require__(769));
+// limited access to scope view, core query expansion required
+// this will read the permissions found on the access page (not those for an organization)
+exports.default = new condition_1.default('repo observer')
+    .extend(repo_triage_1.default)
+    .runIf(data => data.repository.isInOrganization)
+    .useCheck((data, context) => data.repository.collaborators.edges.some(edge => edge.permission === 'MAINTAIN' && (edge.node.login === context.actor)));
 
 
 /***/ }),
@@ -78,13 +182,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const condition_1 = __importDefault(__nccwpck_require__(2680));
-exports.default = new condition_1.default('repo owner').useCheck((data, context) => {
-    if (data.repository.isInOrganization) {
-        return false;
-    }
+const site_admin_1 = __importDefault(__nccwpck_require__(5874));
+exports.default = new condition_1.default('repo owner')
+    .extend(site_admin_1.default)
+    .runIf(data => !data.repository.isInOrganization)
+    .useCheck((data, context) => {
     const owner = data.repository.owner;
     return (owner.login || context.repo.owner) === context.actor;
 });
+
+
+/***/ }),
+
+/***/ 769:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const condition_1 = __importDefault(__nccwpck_require__(2680));
+const repo_maintainer_1 = __importDefault(__nccwpck_require__(3742));
+exports.default = new condition_1.default('repo triage')
+    .extend(repo_maintainer_1.default)
+    .runIf(data => data.repository.isInOrganization)
+    .useCheck((data, context) => data.repository.collaborators.edges.some(edge => edge.permission === 'TRIAGE' && (edge.node.login === context.actor)));
 
 
 /***/ }),
@@ -99,7 +223,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const condition_1 = __importDefault(__nccwpck_require__(2680));
-exports.default = new condition_1.default('site admin').useCheck((data, _context) => data.user.isSiteAdmin);
+exports.default = new condition_1.default('site admin')
+    .useCheck((data, _context) => data.user.isSiteAdmin);
 
 
 /***/ }),
@@ -112,18 +237,55 @@ exports.default = new condition_1.default('site admin').useCheck((data, _context
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 class ConditionBuilder {
     constructor(key) {
+        this.checks = [];
+        this.inheritsFrom = [];
+        this.type = 'and';
         this.key = key;
-        this.check = () => false;
     }
     useCheck(predicate) {
-        this.check = predicate;
+        if (!this.checks.includes(predicate)) {
+            this.checks.push(predicate);
+        }
+        return this;
+    }
+    useType(type) {
+        this.type = type;
         return this;
     }
     build() {
+        const { key, type, preCondition, checks, inheritsFrom, } = this;
         return {
-            key: this.key,
-            check: this.check,
+            key,
+            check(data, context) {
+                if (preCondition && !preCondition(data, context)) {
+                    return false;
+                }
+                let outcome = false;
+                switch (type) {
+                    case 'and':
+                        outcome = checks.every(check => check(data, context));
+                        break;
+                    case 'or':
+                    default:
+                        outcome = checks.some(check => check(data, context));
+                        break;
+                }
+                return outcome || inheritsFrom.some(c => c.check(data, context));
+                // if checks is changed to array, ConditionPredicate may be used instead Condition object - that is until the key is required for inherited conditions
+                // console.debug(`Condition '${key}' is found to be true through '${predicate.key}'.`)
+            },
         };
+    }
+    extend(condition) {
+        const { key, check } = condition instanceof ConditionBuilder ? condition.build() : condition;
+        if (!this.inheritsFrom.includes({ key, check })) {
+            this.inheritsFrom.push({ key, check }); // just in-case the key can be used in future
+        }
+        return this;
+    }
+    runIf(predicate) {
+        this.preCondition = predicate;
+        return this;
     }
 }
 exports.default = ConditionBuilder;
@@ -181,7 +343,7 @@ function run() {
                 return;
             }
             const token = core.getInput('github-token');
-            const octokit = github_1.getOctokit(token);
+            const octokit = (0, github_1.getOctokit)(token);
             const data = yield octokit.graphql(`
 			query accessData($owner: String!, $actor: String!, $repo: String!) {
 				user(login: $actor) {
@@ -231,9 +393,9 @@ function run() {
                 actor,
             });
             core.debug(`Access Data: ${JSON.stringify(data)}`);
-            const { groups, highestGroup } = access_1.accessGroups(github_1.context, data);
-            util_1.logAndExport('groups', groups, `${actor} has access to %s`);
-            util_1.logAndExport('highest-group', highestGroup, `${actor} groups.first -> %s`);
+            const { groups, highestGroup } = (0, access_1.accessGroups)(github_1.context, data);
+            (0, util_1.logAndExport)('groups', groups, `${actor} has access to %s`);
+            (0, util_1.logAndExport)('highest-group', highestGroup, `${actor} groups.first -> %s`);
         }
         catch (error) {
             core.setFailed(error);
@@ -255,8 +417,8 @@ exports.logAndExport = void 0;
 const util_1 = __nccwpck_require__(1669);
 const core_1 = __nccwpck_require__(2186);
 function logAndExport(key, input, message) {
-    core_1.debug(util_1.format(`(%s) ${message}`, key, input));
-    core_1.setOutput(key, input);
+    (0, core_1.debug)((0, util_1.format)(`(%s) ${message}`, key, input));
+    (0, core_1.setOutput)(key, input);
 }
 exports.logAndExport = logAndExport;
 
@@ -396,7 +558,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getMultilineInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
+exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.notice = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getMultilineInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
 const command_1 = __nccwpck_require__(7351);
 const file_command_1 = __nccwpck_require__(717);
 const utils_1 = __nccwpck_require__(5278);
@@ -574,19 +736,30 @@ exports.debug = debug;
 /**
  * Adds an error issue
  * @param message error issue message. Errors will be converted to string via toString()
+ * @param properties optional properties to add to the annotation.
  */
-function error(message) {
-    command_1.issue('error', message instanceof Error ? message.toString() : message);
+function error(message, properties = {}) {
+    command_1.issueCommand('error', utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
 exports.error = error;
 /**
- * Adds an warning issue
+ * Adds a warning issue
  * @param message warning issue message. Errors will be converted to string via toString()
+ * @param properties optional properties to add to the annotation.
  */
-function warning(message) {
-    command_1.issue('warning', message instanceof Error ? message.toString() : message);
+function warning(message, properties = {}) {
+    command_1.issueCommand('warning', utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
 exports.warning = warning;
+/**
+ * Adds a notice issue
+ * @param message notice issue message. Errors will be converted to string via toString()
+ * @param properties optional properties to add to the annotation.
+ */
+function notice(message, properties = {}) {
+    command_1.issueCommand('notice', utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
+}
+exports.notice = notice;
 /**
  * Writes info to log with console.log.
  * @param message info message
@@ -720,7 +893,7 @@ exports.issueCommand = issueCommand;
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.toCommandValue = void 0;
+exports.toCommandProperties = exports.toCommandValue = void 0;
 /**
  * Sanitizes an input into a string so it can be passed into issueCommand safely
  * @param input input to sanitize into a string
@@ -735,6 +908,25 @@ function toCommandValue(input) {
     return JSON.stringify(input);
 }
 exports.toCommandValue = toCommandValue;
+/**
+ *
+ * @param annotationProperties
+ * @returns The command properties to send with the actual annotation command
+ * See IssueCommandProperties: https://github.com/actions/runner/blob/main/src/Runner.Worker/ActionCommandManager.cs#L646
+ */
+function toCommandProperties(annotationProperties) {
+    if (!Object.keys(annotationProperties).length) {
+        return {};
+    }
+    return {
+        title: annotationProperties.title,
+        line: annotationProperties.startLine,
+        endLine: annotationProperties.endLine,
+        col: annotationProperties.startColumn,
+        endColumn: annotationProperties.endColumn
+    };
+}
+exports.toCommandProperties = toCommandProperties;
 //# sourceMappingURL=utils.js.map
 
 /***/ }),
