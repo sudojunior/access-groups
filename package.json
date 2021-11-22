@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@types/node": "16.11.9",
-    "@typescript-eslint/parser": "5.3.1",
+    "@typescript-eslint/parser": "5.4.0",
     "@vercel/ncc": "0.32.0",
     "all-contributors-cli": "6.20.0",
     "ava": "3.15.0",
